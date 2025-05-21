@@ -137,13 +137,13 @@ const Shortener = () => {
               >
                 {showCustomUrl ? 'Hide Custom URL' : 'Add Custom URL'}
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className={`px-4 py-2 rounded-lg border border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 font-medium transition-colors ${showPassword ? 'ring-2 ring-blue-400' : ''}`}
               >
                 {showPassword ? 'Hide Password Protection' : 'Add Password Protection'}
-              </button>
+              </button> */}
             </div>
             {showCustomUrl && (
               <div>
@@ -160,7 +160,7 @@ const Shortener = () => {
                 />
               </div>
             )}
-            {showPassword && (
+            {/* {showPassword && (
               <div>
                 <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">
                   Password Protection
@@ -174,7 +174,7 @@ const Shortener = () => {
                   placeholder="Enter password"
                 />
               </div>
-            )}
+            )} */}
             <button type="submit" className="btn-primary w-full text-lg" >
               Shorten URL
             </button>
