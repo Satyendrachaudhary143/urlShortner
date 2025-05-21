@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendOtpEmail = async (email, otp) => {
   const mailOptions = {
-    from: `"MIP App" <${process.env.EMAIL_USER}>`,
+    from: `"MIP Technology" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Your Verification OTP',
     html: `

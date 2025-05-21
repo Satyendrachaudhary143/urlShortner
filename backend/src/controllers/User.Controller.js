@@ -2,6 +2,8 @@ import { User } from "../models/User.Model.js";
 import { Otp } from "../models/Otp.Model.js";
 import { sendOtpEmail } from "../utils/emailService.js";
 import jwt from "jsonwebtoken";
+import { sendWelcomeEmail } from "../utils/WelcomeEmailService.js";
+import { ChangePasswordAlrt } from "../utils/ChangePasswordEmailService.js";
 
 export const Register = async (req, res) => {
   try {
@@ -78,7 +80,8 @@ export const VerifyUser = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
-    }
+     }
+    await sendWelcomeEmail(user.email, user.name); // Send welcome email
 
     res.json({ success: true, user });
   } catch (error) {
@@ -237,6 +240,8 @@ export const ForgotPasswordReset = async (req, res) => {
 
     // Optionally delete OTP after use
     await Otp.deleteMany({ email });
+
+    await ChangePasswordAlrt(user.email, user.name); // Send password change alert email
 
     res.json({ success: true, message: "Password updated successfully" });
   } catch (error) {
