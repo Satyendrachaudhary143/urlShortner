@@ -130,7 +130,7 @@ function ForgotePass() {
                         disabled={loading}
                         className="bg-blue-500 text-white p-2 rounded mt-3"
                     >
-                        {loading ? 'Loading...' : 'Send OTP'}
+                        {loading ? 'Otp Sending...' : 'Send OTP'}
                     </button>
                 </>
             )}
