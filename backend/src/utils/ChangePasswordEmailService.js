@@ -19,7 +19,7 @@ export const ChangePasswordAlrt = async (email, user) => {
     html: `
      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
     <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <h2 style="color: #2563eb;">Change Password Alert</h2>
+        <h2 style="color: #E60000;">Change Password Alert</h2>
         <p>Dear ${user},</p>
         <p>Your password has been successfully changed. </p>
         <p>If you did not initiate this change, please contact us immediately.</p>
