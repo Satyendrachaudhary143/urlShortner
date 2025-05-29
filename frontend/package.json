@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy": "https://urlshortner-id47.onrender.com",
+  "proxy": "https://url-shortner-nine-ochre.vercel.app/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
