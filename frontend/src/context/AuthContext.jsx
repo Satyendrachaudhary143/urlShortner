@@ -3,6 +3,16 @@ import axios from 'axios';
 
 const AuthContext = createContext(null);
 
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: 'https://url-shortner-nine-ochre.vercel.app',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  credentials: 'include'
+});
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -11,15 +21,20 @@ export const AuthProvider = ({ children }) => {
     // Check if user is already logged in
     const checkAuth = async () => {
       try {
-        const response = await axios.get('/api/v1/user/me', {
+        const response = await api.get('/api/v1/user/me', {
           withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
         });
-        if (response.status === 200) {
+        if (response.data && response.data.user) {
           setUser(response.data.user);
-          localStorage.setItem('user', JSON.stringify(response.data.user._id));
+          localStorage.setItem('user', JSON.stringify(response.data.user));
         }
       } catch (error) {
         console.error('Auth check failed:', error);
+        setUser(null);
+        localStorage.removeItem('user');
       } finally {
         setLoading(false);
       }
@@ -30,29 +45,40 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(
-        '/api/v1/user/login',
+      const response = await api.post('/api/v1/user/login', 
         { email, password },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
       );
-
-      setUser(response.data.user);
-      return { success: true };
+      if (response.data && response.data.user) {
+        setUser(response.data.user);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        return { success: true };
+      }
+      return { success: false, error: 'Invalid response from server' };
     } catch (error) {
+      console.error('Login error:', error);
       return {
         success: false,
-        error:
-          error.response?.data?.message ||
-          error.response?.data?.error ||
-          'Login failed',
+        error: error.response?.data?.message || error.message || 'Login failed',
       };
     }
   };
 
   const logout = async () => {
     try {
-      await axios.get('/api/v1/user/logout', { withCredentials: true });
+      await api.get('/api/v1/user/logout', {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       setUser(null);
+      localStorage.removeItem('user');
     } catch (error) {
       console.error('Logout failed:', error);
     }

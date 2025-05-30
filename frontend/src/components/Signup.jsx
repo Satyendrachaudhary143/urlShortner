@@ -39,12 +39,14 @@ const Signup = () => {
     setError('');
 
     try {
-      await axios.post('/api/v1/user/register', formData);
-      setStep(2); // Move to OTP verification
-      setResendDisabled(true);
-      setCountdown(30);
+      const response = await axios.post('/api/v1/user/register', formData);
+      if (response.data) {
+        setStep(2); // Move to OTP verification
+        setResendDisabled(true);
+        setCountdown(30);
+      }
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed');
+      setError(err.response?.data?.message || err.response?.data?.error || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -56,16 +58,15 @@ const Signup = () => {
     setError('');
 
     try {
-      await axios.post('/api/v1/user/verify-otp', { 
+      const response = await axios.post('/api/v1/user/verify-otp', { 
         email: formData.email, 
         otp 
       });
-    
-      // Redirect to login/dashboard
-      Navigate("/login");
-
+      if (response.data) {
+        Navigate("/login");
+      }
     } catch (err) {
-      setError(err.response?.data?.error || 'OTP verification failed');
+      setError(err.response?.data?.message || err.response?.data?.error || 'OTP verification failed');
     } finally {
       setLoading(false);
     }
@@ -76,11 +77,13 @@ const Signup = () => {
     setError('');
 
     try {
-      await axios.post('/api/v1/user/resend-otp', { email: formData.email });
-      setResendDisabled(true);
-      setCountdown(30);
+      const response = await axios.post('/api/v1/user/resend-otp', { email: formData.email });
+      if (response.data) {
+        setResendDisabled(true);
+        setCountdown(30);
+      }
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to resend OTP');
+      setError(err.response?.data?.message || err.response?.data?.error || 'Failed to resend OTP');
     } finally {
       setLoading(false);
     }

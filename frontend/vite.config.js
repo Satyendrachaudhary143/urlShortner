@@ -6,7 +6,12 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   server: {
     proxy: {
-      "/api":"https://url-shortner-nine-ochre.vercel.app"
+      '/api': {
+        target: 'https://url-shortner-nine-ochre.vercel.app',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
     }
   },
 
