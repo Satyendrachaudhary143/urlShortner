@@ -1,7 +1,7 @@
 import express from 'express';
 
 import dotenv from 'dotenv';
-import cors from 'cors';
+// import cors from 'cors';
 import { connectDB } from './src/utils/dbConnection.js';
 import UserRoute from './src/routes/User.route.js';
 import cookieParser from 'cookie-parser';
@@ -10,11 +10,11 @@ import RedirectRoute from './src/routes/Redirect.rout.js';
 const app = express();
 dotenv.config({});
 // Middleware
-app.use(cors({
-    origin: ['http://localhost:5173', 'https://shorturl-frontend.vercel.app'],
-    credentials: true,
+// app.use(cors({
+//     origin: ['http://localhost:5173', 'https://shorturl-frontend.vercel.app'],
+//     credentials: true,
 
-}));
+// }));
 
 
 const PORT = process.env.PORT || 3000;

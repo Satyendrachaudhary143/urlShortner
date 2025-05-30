@@ -4,18 +4,16 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      "/api":"https://url-shortner-nine-ochre.vercel.app"
+    }
+  },
+
   plugins: [
     react(),
     tailwindcss(),
 
   ],
-    server: {
-    proxy: {
-      '/api': {
-        target: 'https://url-shortner-nine-ochre.vercel.app',
-        changeOrigin: true,
-        secure: false
-      }
-    }
-  }
+ 
 })
