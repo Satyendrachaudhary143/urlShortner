@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext(null);
 
@@ -10,14 +11,12 @@ export const AuthProvider = ({ children }) => {
     // Check if user is already logged in
     const checkAuth = async () => {
       try {
-        const response = await fetch('/api/v1/user/me', {
-          credentials: 'include',
+        const response = await axios.get('/api/v1/user/me', {
+          withCredentials: true,
         });
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-          localStorage.setItem('user', JSON.stringify(data.user._id));
-          
+        if (response.status === 200) {
+          setUser(response.data.user);
+          localStorage.setItem('user', JSON.stringify(response.data.user._id));
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -31,35 +30,28 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('/api/v1/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await axios.post(
+        '/api/v1/user/login',
+        { email, password },
+        { withCredentials: true }
+      );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || data.error || 'Login failed');
-      }
-
-      setUser(data);
+      setUser(response.data.user);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          'Login failed',
+      };
     }
   };
 
   const logout = async () => {
     try {
-      await fetch('/api/v1/user/logout', {
-        method: 'GET',
-        credentials: 'include',
-      });
+      await axios.get('/api/v1/user/logout', { withCredentials: true });
       setUser(null);
     } catch (error) {
       console.error('Logout failed:', error);
@@ -79,4 +71,4 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}; 
+};
