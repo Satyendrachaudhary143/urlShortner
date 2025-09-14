@@ -24,7 +24,6 @@ const Shortener = () => {
         credentials: 'include',
       });
       const data = await response.json();
-      console.log('Fetched URLs:', data);
       if (response.ok) {
         setUrlList(Array.isArray(data.urls) ? data.urls : []);
         setError(null);

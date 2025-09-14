@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
       try {
         console.log('Checking authentication status...');
         const response = await api.get('/api/v1/user/me');
-        console.log('Auth check response:', response.data);
         
         if (response.data && response.data.user) {
           setUser(response.data.user);
@@ -42,9 +41,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      console.log('Attempting login...');
+     
       const response = await api.post('/api/v1/user/login', { email, password });
-      console.log('Login response:', response.data);
       
       if (response.data && response.data.user) {
         setUser(response.data.user);

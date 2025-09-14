@@ -22,7 +22,7 @@ const Navbar = () => {
                 
                 <button
                   onClick={logout}
-                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                  className="text-white hover:text-blue-600 font-medium transition-colors"
                 >
                   Logout
                 </button>

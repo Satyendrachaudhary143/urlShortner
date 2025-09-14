@@ -29,10 +29,10 @@ export const AddUrl = async (req, res) => {
       return res.status(400).json({ message: "URL is required" });
     }
     // validate longUrl
-    const longUrlExist = await ShortUrl.findOne({ longUrl , createdBy: userId });
-    if (longUrlExist) {
-      return res.status(400).json({ message: "URL already exists" });
-    }
+    // const longUrlExist = await ShortUrl.findOne({ longUrl , createdBy: userId });
+    // if (longUrlExist) {
+    //   return res.status(400).json({ message: "URL already exists" });
+    // }
     // Create new short URL
       const shortUrl = customUrl ? `${req.protocol}://${req.get("host")}/${customUrl}` : `${req.protocol}://${req.get("host")}/${randomString}`;
       console.log("url",shortUrl);
