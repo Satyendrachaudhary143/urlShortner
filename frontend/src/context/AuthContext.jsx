@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: 'https://urlshortner-1-snga.onrender.com',
+  baseURL: 'http://localhost:5000', // Update with your backend URL
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

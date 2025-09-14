@@ -13,7 +13,8 @@ dotenv.config({});
 // Middleware
 const allowedOrigins = [
   'https://notetaking-1-w0mg.onrender.com', // your frontend origin
-  'http://localhost:5173' // optional for local dev
+  'http://localhost:5173',// optional for local dev
+  'http://localhost:5000' // backend origin for testing,
 ];
 
 app.use((req, res, next) => {
@@ -27,16 +28,19 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
 const corsOptions = {
   origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
 };
+
 
 app.use(cors(corsOptions));
 
