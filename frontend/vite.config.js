@@ -7,10 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://url-shortner-nine-ochre.vercel.app',
+        target: 'https://urlshortner-id47.onrender.com',
         changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        secure: false,
       }
     }
   },

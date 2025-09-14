@@ -8,32 +8,39 @@ import { ChangePasswordAlrt } from "../utils/ChangePasswordEmailService.js";
 export const Register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    console.log('Registration attempt for:', email);
+
     // Validate input
     if (!name || !email || !password) {
+      console.log('Missing required fields');
       return res.status(400).json({ message: "All fields are required" });
     }
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email,verified:true });
+    const existingUser = await User.findOne({ email, verified: true });
     if (existingUser) {
+      console.log('User already exists:', email);
       return res.status(400).json({ message: "User already exists" });
     }
+
     // check if email is not verified
     const unverifiedUser = await User.findOne({ email, verified: false });
-    
     if (unverifiedUser) {
-      console.log("he from delete unverified user",DeleteUnverifiedUser);
-      const DeleteUnverifiedUser = await User.findOneAndDelete({ email,verified:false });
+      console.log('Deleting unverified user:', email);
+      const DeleteUnverifiedUser = await User.findOneAndDelete({ email, verified: false });
       if (!DeleteUnverifiedUser) {
-        
+        console.log('Error deleting unverified user:', email);
         return res.status(400).json({ message: "Error deleting unverified user" });
       }
       return res.status(400).json({ message: "User already exists but not verified" });
     }
+
     // Create new user
+    console.log('Creating new user:', email);
     const newUser = await User.create({ name, email, password, verified: false });
-    newUser.save();
-    // await User({ name, email, password ,verified:false });
-   // Generate OTP
+    await newUser.save();
+
+    // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
@@ -43,11 +50,14 @@ export const Register = async (req, res) => {
     // Send OTP email
     await sendOtpEmail(email, otp);
 
+    console.log('Registration successful for:', email);
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server error by registering", error });
-    console.log(error);
-    
+    console.error('Registration error:', error);
+    res.status(500).json({ 
+      message: "Server error by registering", 
+      error: error.message 
+    });
   }
 }
 
@@ -130,14 +140,26 @@ export const Login = async (req, res) => {
     if (user.password != password) {
       return res.status(400).json({ message: "Invalid password" });
     }
+
     const scret_Key = process.env.JWT_SECRET;
+    if (!scret_Key) {
+      console.error('JWT_SECRET is not set in environment variables');
+      return res.status(500).json({ message: "Server configuration error" });
+    }
+
     const token = jwt.sign({user}, scret_Key, { expiresIn: "7d" });
     // Send token in response
-    res.cookie("token", token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie("token", token, { 
+      httpOnly: true, 
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/'
+    });
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ message: "Server error by logging in" });
-    console.log(error);
   }
 }
 

@@ -5,12 +5,11 @@ const AuthContext = createContext(null);
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: 'https://url-shortner-nine-ochre.vercel.app',
+  baseURL: 'http://localhost:5000',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-  },
-  credentials: 'include'
+  }
 });
 
 export const AuthProvider = ({ children }) => {
@@ -21,18 +20,16 @@ export const AuthProvider = ({ children }) => {
     // Check if user is already logged in
     const checkAuth = async () => {
       try {
-        const response = await api.get('/api/v1/user/me', {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
+        console.log('Checking authentication status...');
+        const response = await api.get('/api/v1/user/me');
+        console.log('Auth check response:', response.data);
+        
         if (response.data && response.data.user) {
           setUser(response.data.user);
           localStorage.setItem('user', JSON.stringify(response.data.user));
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error('Auth check failed:', error.response?.data || error.message);
         setUser(null);
         localStorage.removeItem('user');
       } finally {
@@ -45,15 +42,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await api.post('/api/v1/user/login', 
-        { email, password },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
+      console.log('Attempting login...');
+      const response = await api.post('/api/v1/user/login', { email, password });
+      console.log('Login response:', response.data);
+      
       if (response.data && response.data.user) {
         setUser(response.data.user);
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -61,7 +53,7 @@ export const AuthProvider = ({ children }) => {
       }
       return { success: false, error: 'Invalid response from server' };
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error:', error.response?.data || error.message);
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Login failed',
@@ -71,16 +63,13 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.get('/api/v1/user/logout', {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      console.log('Attempting logout...');
+      await api.get('/api/v1/user/logout');
+      console.log('Logout successful');
       setUser(null);
       localStorage.removeItem('user');
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error('Logout failed:', error.response?.data || error.message);
     }
   };
 

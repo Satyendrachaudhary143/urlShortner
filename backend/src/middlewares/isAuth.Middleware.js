@@ -5,23 +5,34 @@ const isAuthenticated = async (req, res, next) => {
         const token = req.cookies.token;
         
         if (!token) {
+            console.log("No token found in cookies");
             return res.status(401).json({
                 message: "User not authenticated",
                 success: false,
             });
         }
 
-        const decode = await jwt.verify(token, process.env.JWT_SECRET);
-        if (!decode || !decode.user) {
+        try {
+            const decode = jwt.verify(token, process.env.JWT_SECRET);
+            if (!decode || !decode.user) {
+                console.log("Invalid token structure:", decode);
+                return res.status(401).json({
+                    message: "Invalid token",
+                    success: false
+                });
+            }
+            
+            req.id = decode.user._id;
+            req.user = decode.user;
+            next();
+        } catch (jwtError) {
+            console.error("JWT verification error:", jwtError);
             return res.status(401).json({
-                message: "Invalid token",
-                success: false
+                message: "Invalid or expired token",
+                success: false,
+                error: jwtError.message
             });
         }
-        
-        req.id = decode.user._id;
-        req.user = decode.user;
-        next();
     } catch (error) {
         console.error("Auth middleware error:", error);
         return res.status(401).json({
