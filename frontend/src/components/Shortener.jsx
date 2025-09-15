@@ -15,13 +15,13 @@ const Shortener = () => {
   // Fetch all URLs
   const fetchUrls = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/url/shorten', {
+      const response = await fetch('https://urlshortnerb.onrender.com/api/v1/url/shorten', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        credentials: 'include',
+        credentials: true,
       });
       const data = await response.json();
       if (response.ok) {
@@ -43,7 +43,7 @@ const Shortener = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/v1/url/shorten', {
+      const response = await fetch('https://urlshortnerb.onrender.com/api/v1/url/shorten', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const Shortener = () => {
   // Delete URL
   const handleDelete = async (id) => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/url/shorten', {
+      const response = await fetch('https://urlshortnerb.onrender.com/api/v1/url/shorten', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

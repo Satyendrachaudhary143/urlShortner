@@ -7,9 +7,7 @@ const AuthContext = createContext(null);
 const api = axios.create({
   baseURL: 'https://urlshortnerb.onrender.com', // Update with your backend URL
   withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  }
+ 
 });
 
 export const AuthProvider = ({ children }) => {
