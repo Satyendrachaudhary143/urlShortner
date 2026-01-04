@@ -11,9 +11,14 @@ dotenv.config();
 
 const app = express();
 
+const clintURL = [
+  "https://url-shortner-undc.vercel.app",
+  "http://localhost:5173",
+]
+
 // ✅ CORS (NO TRAILING SLASH)
 app.use(cors({
-  origin: "https://url-shortner-undc.vercel.app",
+  origin: clintURL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 }));
@@ -24,6 +29,10 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.get('/', (req, res) => {
+  res.send('API is running....');
+});
 
 // routes
 app.use('/api/v1/user', UserRoute);
