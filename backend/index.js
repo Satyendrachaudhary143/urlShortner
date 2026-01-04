@@ -22,7 +22,8 @@ dotenv.config({});
 
 // ✅ Apply CORS globally
 app.use(cors({
-  origin: "https://url-shortner-undc.vercel.app/",
+  origin: "https://url-shortner-undc.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
 
