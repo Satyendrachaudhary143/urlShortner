@@ -14,6 +14,7 @@ const app = express();
 const clintURL = [
   "https://url-shortner-undc.vercel.app",
   "http://localhost:5173",
+  "https://urlshortner-1-snga.onrender.com"
 ]
 
 // ✅ CORS (NO TRAILING SLASH)
