@@ -11,12 +11,7 @@ const app = express();
 dotenv.config({});
 
 // Middleware
-const allowedOrigins = [
-  'https://notetaking-1-w0mg.onrender.com',
-  'http://localhost:5173',
 
-
-];
 
 
 
@@ -27,7 +22,7 @@ const allowedOrigins = [
 
 // ✅ Apply CORS globally
 app.use(cors({
-  origin: allowedOrigins,
+  origin: "https://url-shortner-undc.vercel.app/",
   credentials: true,
 }));
 
