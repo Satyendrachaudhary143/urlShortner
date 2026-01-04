@@ -155,15 +155,15 @@ export const Login = async (req, res) => {
       user: {
         _id: user._id,
         email: user.email,
-        role: user.role,
       }
     }, scret_Key, { expiresIn: "7d" });
     // Send token in response
     res.cookie("token", token, { 
       httpOnly: true, 
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+
+      sameSite: 'none',
+      secure: true,
     });
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {
