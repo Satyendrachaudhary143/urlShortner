@@ -1,22 +1,15 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import Loader from "./Loader";
 
 const ProtectLoginReg = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, authChecked, loading } = useAuthStore();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+  if (!authChecked || loading) {
+    return <Loader text="Please wait..." />;
   }
 
-  if (user) {
-    return <Navigate to="/shorten" replace />;
-  }
-
-  return children;
+  return user ? <Navigate to="/shorten" replace /> : children;
 };
 
-export default ProtectLoginReg; 
+export default ProtectLoginReg;

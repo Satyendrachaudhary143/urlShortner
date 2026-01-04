@@ -11,47 +11,27 @@ const app = express();
 dotenv.config({});
 
 // Middleware
-// const allowedOrigins = [
-//   'https://notetaking-1-w0mg.onrender.com',
-//   'http://localhost:5173',
-//   'http://localhost:5000'
-// ];
-const corsOptions = {
-  origin: '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
+const allowedOrigins = [
+  'https://notetaking-1-w0mg.onrender.com',
+  'http://localhost:5173',
 
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true,
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type', 'Authorization']
-// };
+
+];
+
+
+
+
+
+
+
 
 // ✅ Apply CORS globally
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
-// ✅ Handle preflight requests manually (if needed)
-// app.use((req, res, next) => {
-//   console.log('Origin:', req.headers.origin);
-// console.log('Method:', req.method);
-//   if (req.method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Origin', req.headers.origin);
-//     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-//     res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-//     res.header('Access-Control-Allow-Credentials', 'true');
-//     return res.sendStatus(204);
-//   }
-//   next();
-// });
+
 
 
 const PORT = process.env.PORT || 3000;

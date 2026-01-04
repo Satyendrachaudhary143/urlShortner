@@ -21,8 +21,7 @@ const isAuthenticated = async (req, res, next) => {
                     success: false
                 });
             }
-            
-            req.id = decode.user._id;
+
             req.user = decode.user;
             next();
         } catch (jwtError) {

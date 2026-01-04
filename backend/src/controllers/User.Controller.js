@@ -8,7 +8,6 @@ import { ChangePasswordAlrt } from "../utils/ChangePasswordEmailService.js";
 export const Register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    console.log('Registration attempt for:', email);
 
     // Validate input
     if (!name || !email || !password) {
@@ -19,20 +18,17 @@ export const Register = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email, verified: true });
     if (existingUser) {
-      console.log('User already exists:', email);
       return res.status(400).json({ message: "User already exists" });
     }
 
     // check if email is not verified
     const unverifiedUser = await User.findOne({ email, verified: false });
     if (unverifiedUser) {
-      console.log('Deleting unverified user:', email);
       const DeleteUnverifiedUser = await User.findOneAndDelete({ email, verified: false });
       if (!DeleteUnverifiedUser) {
         console.log('Error deleting unverified user:', email);
         return res.status(400).json({ message: "Error deleting unverified user" });
       }
-      return res.status(400).json({ message: "User already exists but not verified" });
     }
 
     // Create new user
@@ -51,7 +47,7 @@ export const Register = async (req, res) => {
     await sendOtpEmail(email, otp);
 
     console.log('Registration successful for:', email);
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({ message: "Otp send successfully" });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ 
@@ -64,14 +60,17 @@ export const Register = async (req, res) => {
 export const VerifyUser = async (req, res) => {
    try {
     const { email, otp } = req.body;
+     console.log("email :", email, "otp", otp);
 
     // Find valid OTP
     const otpRecord = await Otp.findOne({
       email,
       otp,
-      expiresAt: { $gt: new Date() },
+      // expiresAt: { $gt: new Date() },
       verified: false
     });
+     console.log(otpRecord);
+
 
     if (!otpRecord) {
       return res.status(400).json({ error: 'Invalid or expired OTP' });
@@ -136,9 +135,14 @@ export const Login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
+    if (user.verified === false) {
+      const deleteUser = await User.findOneAndDelete({ email, verified: false });
+
+      return res.status(400).json({ message: "User not verified register again!" });
+    }
     // Check password
     if (user.password != password) {
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(400).json({ message: "Invalid credencial" });
     }
 
     const scret_Key = process.env.JWT_SECRET;
@@ -147,14 +151,19 @@ export const Login = async (req, res) => {
       return res.status(500).json({ message: "Server configuration error" });
     }
 
-    const token = jwt.sign({user}, scret_Key, { expiresIn: "7d" });
+    const token = jwt.sign({
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+      }
+    }, scret_Key, { expiresIn: "7d" });
     // Send token in response
     res.cookie("token", token, { 
       httpOnly: true, 
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
-      path: '/'
     });
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {
@@ -174,7 +183,8 @@ export const Logout = async (req, res) => {
 }
 
 export const GetUser = async (req, res) => {
-const userId = req.id; // Assuming you have middleware to set req.user from the token
+  const userId = req.user._id;// Assuming you have middleware to set req.user from the token
+
   try {
     const user = await User.findById(userId);
     if (!user) {
