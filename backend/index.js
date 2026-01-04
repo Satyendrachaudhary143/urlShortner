@@ -7,41 +7,32 @@ import cookieParser from 'cookie-parser';
 import ShortUrlRoute from './src/routes/ShortUrl.rout.js';
 import RedirectRoute from './src/routes/Redirect.rout.js';
 
+dotenv.config();
+
 const app = express();
-dotenv.config({});
 
-// Middleware
-
-
-
-
-
-
-
-
-
-// ✅ Apply CORS globally
+// ✅ CORS (NO TRAILING SLASH)
 app.use(cors({
   origin: "https://url-shortner-undc.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 }));
 
+app.options("*", cors());
 
-
-
-const PORT = process.env.PORT || 3000;
-
+// middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// api routes
+// routes
 app.use('/api/v1/user', UserRoute);
 app.use('/api/v1/url', ShortUrlRoute);
 app.use(RedirectRoute);
 
+const PORT = process.env.PORT || 3000;
+
 connectDB();
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
